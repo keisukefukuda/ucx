@@ -266,6 +266,10 @@ AC_CHECK_HEADERS([sys/thr.h])
 AC_CHECK_HEADERS([malloc.h])
 AC_CHECK_HEADERS([malloc_np.h])
 
+#
+# epoll headers are Linux-specific
+#
+AC_CHECK_HEADERS([sys/epoll.h])
 
 #
 # endianess
