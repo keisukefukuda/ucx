@@ -116,9 +116,6 @@ void *ucm_sys_realloc(void *ptr, size_t size)
 {
     size_t oldsize, sys_size;
     void *oldptr, *newptr;
-#ifdef __APPLE__
-    int ret;
-#endif
 
     if (ptr == NULL) {
         return ucm_sys_malloc(size);
