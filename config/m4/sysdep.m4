@@ -14,8 +14,12 @@ AC_FUNC_ALLOCA
 #IPC_INFO
 AC_CHECK_LIB([rt], [shm_open], [AC_DEFINE([HAVE_SHMEM_SYSV], [1],[Shared Memory SysV is available])],[])
 AC_CHECK_LIB([rt], [timer_create], [], AC_MSG_WARN([librt not found]))
-
-
+AC_CHECK_DECLS([SHM_REMAP], 
+               [],
+			   [], 
+               [#include <sys/types.h>
+                #include <sys/shm.h>])
+ 
 #
 # Extended string functions
 #

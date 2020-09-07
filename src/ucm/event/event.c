@@ -300,6 +300,7 @@ void *ucm_shmat(int shmid, const void *shmaddr, int shmflg)
 
     size = ucm_shm_size(shmid);
 
+#if HAVE_DECL_SHM_REMAP
     if ((shmflg & SHM_REMAP) && (shmaddr != NULL)) {
         attach_addr = (uintptr_t)shmaddr;
         if (shmflg & SHM_RND) {
@@ -308,6 +309,9 @@ void *ucm_shmat(int shmid, const void *shmaddr, int shmflg)
         ucm_dispatch_vm_munmap((void*)attach_addr, size);
         ucm_shm_del_entry_from_khash((void*)attach_addr, NULL);
     }
+#else
+    (void) attach_addr;
+#endif
 
     event.shmat.result  = MAP_FAILED;
     event.shmat.shmid   = shmid;

@@ -1040,11 +1040,11 @@ ucs_status_t ucs_sysv_alloc(size_t *size, size_t max_size, void **address_p,
 
     /* Attach segment */
     if (*address_p) {
-#if __APPLE__
-        ucs_error("macOS doesn't support SHM_REMAP yet");
-        return UCS_ERR_INVALID_PARAM;
-#else
+#if HAVE_DECL_SHM_REMAP
         ptr = shmat(*shmid, *address_p, SHM_REMAP);
+#else
+        ucs_error("macOS doesn't support SHM_REMAP");
+        return UCS_ERR_INVALID_PARAM;
 #endif
     } else {
         ptr = shmat(*shmid, NULL, 0);
