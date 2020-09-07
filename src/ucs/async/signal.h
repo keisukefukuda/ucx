@@ -13,6 +13,19 @@
 #include <ucs/sys/sys.h> /* for ucs_get_tid() */
 #include <pthread.h>
 
+#ifdef __APPLE__
+
+/* macOS doesn't support signal mode yet */
+typedef struct ucs_async_signal_context {
+} ucs_async_signal_context_t;
+
+#define UCS_ASYNC_SIGNAL_BLOCK(_async)
+
+#define UCS_ASYNC_SIGNAL_UNBLOCK(_async)
+
+#define UCS_ASYNC_SIGNAL_IS_RECURSIVELY_BLOCKED(_async)
+
+#else
 
 typedef struct ucs_async_signal_context {
     pid_t               tid;         /* Thread ID to receive the signal */
@@ -43,3 +56,5 @@ typedef struct ucs_async_signal_context {
 
 
 #endif
+
+#endif /* __APPLE__ */
