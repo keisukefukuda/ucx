@@ -169,7 +169,7 @@ void ucm_event_enter_exclusive()
 void ucm_event_leave()
 {
 #ifdef HAVE_PROGRESS64
-    p64_spinlock_release(&threads_lock);
+    p64_spinlock_release(&ucm_event_lock);
 #else
     pthread_rwlock_unlock(&ucm_event_lock);
 #endif
@@ -280,7 +280,7 @@ static int ucm_shm_del_entry_from_khash(const void *addr, size_t *size)
     khiter_t iter;
 
 #ifdef HAVE_PROGRESS64
-    p64_spinlock_try_acquire(&threads_lock);
+    p64_spinlock_try_acquire(&ucm_kh_lock);
 #else
     pthread_spin_lock(&ucm_kh_lock);
 #endif
@@ -291,7 +291,7 @@ static int ucm_shm_del_entry_from_khash(const void *addr, size_t *size)
         }
         kh_del(ucm_ptr_size, &ucm_shmat_ptrs, iter);
 #ifdef HAVE_PROGRESS64
-    p64_spinlock_release(&threads_lock);
+    p64_spinlock_release(&ucm_kh_lock);
 #else
         pthread_spin_unlock(&ucm_kh_lock);
 #endif
@@ -299,7 +299,7 @@ static int ucm_shm_del_entry_from_khash(const void *addr, size_t *size)
     }
 
 #ifdef HAVE_PROGRESS64
-    p64_spinlock_release(&threads_lock);
+    p64_spinlock_release(&ucm_kh_lock);
 #else
     pthread_spin_unlock(&ucm_kh_lock);
 #endif
@@ -342,7 +342,7 @@ void *ucm_shmat(int shmid, const void *shmaddr, int shmflg)
 
     if (event.shmat.result != MAP_FAILED) {
 #ifdef HAVE_PROGRESS64
-    p64_spinlock_try_acquire(&threads_lock);
+    p64_spinlock_try_acquire(&ucm_kh_lock);
 #else
         pthread_spin_lock(&ucm_kh_lock);
 #endif
@@ -351,7 +351,7 @@ void *ucm_shmat(int shmid, const void *shmaddr, int shmflg)
             kh_value(&ucm_shmat_ptrs, iter) = size;
         }
 #ifdef HAVE_PROGRESS64
-    p64_spinlock_release(&threads_lock);
+    p64_spinlock_release(&ucm_kh_lock);
 #else
         pthread_spin_unlock(&ucm_kh_lock);
 #endif
@@ -662,7 +662,7 @@ ucs_status_t ucm_test_external_events(int events)
 
 UCS_STATIC_INIT {
 #if HAVE_PROGRESS64
-    p64_spinlock_init(&threads_lock);
+    p64_spinlock_init(&ucm_kh_lock);
 #else
     pthread_spin_init(&ucm_kh_lock, PTHREAD_PROCESS_PRIVATE);
 #endif
