@@ -105,6 +105,7 @@ ucs_recursive_spinlock_destroy(ucs_recursive_spinlock_t *lock)
     if (lock->count != 0) {
         return UCS_ERR_BUSY;
     }
+    return UCS_OK;
 }
 
 static inline int
