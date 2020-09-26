@@ -67,6 +67,10 @@ AC_CHECK_TYPES([sighandler_t,  __sighandler_t], [], [],
 AC_CHECK_HEADERS([pthread_np.h])
 AC_SEARCH_LIBS(pthread_create, pthread)
 AC_SEARCH_LIBS(pthread_atfork, pthread)
+AC_CHECK_DECLS([PTHREAD_BARRIER_SERIAL_THREAD], 
+               AC_DEFINE([HAVE_PTHREAD_BARRIER_SERIAL_THREAD], 1, [Have PTHREAD_BARRIER_SERIAL_THREAD]),
+               [],
+               [#include <pthread.h>])
 
 
 #

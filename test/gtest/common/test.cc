@@ -378,6 +378,7 @@ void test_base::cleanup() {
 }
 
 bool test_base::barrier() {
+#if HAVE_PTHREAD_BARRIER_SERIAL_THREAD
     int ret = pthread_barrier_wait(&m_barrier);
     if (ret == 0) {
         return false;
@@ -386,6 +387,9 @@ bool test_base::barrier() {
     } else {
         UCS_TEST_ABORT("pthread_barrier_wait() failed");
     }
+#else
+# error "No PTHREAD_BARRIER_SERIAL_THREAD"
+#endif
 }
 
 static void clear_dontcopy_regions_vma_cb(ucs_sys_vma_info_t *info, void *ctx) {
